@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //No Status Bar will be shown i.e fullScreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
@@ -41,22 +42,30 @@ public class MainActivity extends AppCompatActivity {
         tvCardText = findViewById(R.id.tv_code_text);
         dbvScanner = findViewById(R.id.dbv_barcode);
 
+        //Request Permission for Accessing Camera
         requestPermission();
 
+        /**
+         * You can also use Continuous Detection using decodeContinuous
+         */
         dbvScanner.decodeSingle(new BarcodeCallback() {
             @Override
             public void barcodeResult(BarcodeResult result) {
                 updateText(result.getText());
                 beepSound();
+                //You can finish activity here
             }
 
             @Override
             public void possibleResultPoints(List<ResultPoint> resultPoints) {
-
+                //Show error if not found
             }
         });
     }
 
+    /**
+     * Play Sound when Scanning Complete - Beware while using continuos detection the sound will also play again again.So, make  sure to handle that
+     */
     protected void beepSound() {
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
